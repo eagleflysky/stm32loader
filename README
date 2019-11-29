@@ -6,7 +6,7 @@ Python script which will talk to the STM32 bootloader to upload and download fir
 Original Version by: Ivan A-R <ivan@tuxotronic.org>
 
 
-Usage: ./stm32loader.py [-hqVewvr] [-l length] [-p port] [-b baud] [-a addr] [file.bin]
+Usage: ./stm32loader.py  [-hqVewvr] [-l length] [-p port] [-b baud] [-a addr] [-g addr] [file.bin]
     -h          This help
     -q          Quiet
     -V          Verbose
@@ -17,13 +17,26 @@ Usage: ./stm32loader.py [-hqVewvr] [-l length] [-p port] [-b baud] [-a addr] [fi
     -l length   Length of read
     -p port     Serial port (default: /dev/tty.usbserial-ftCYPMYJ)
     -b baud     Baud speed (default: 115200)
+    -t parity   N(none),E(Even),O(Odd)
     -a addr     Target address
+    -g addr     Address to start running at (0x08000000, usually)
 
     ./stm32loader.py -e -w -v example/main.bin
 
 
 Example:
-stm32loader.py -e -w -v somefile.bin
+1.First program qspi uart boot loader into STM32H750 internal flash
+#With BOOT0 pulled up:
+python stm32loader.py -p COM8 -b 115200 -t E -a 0x08000000 -ewv qspi.bin
+#This will pre-erase flash, write qspi.bin to the internal flash on the device, and then perform a verification after writing is finished.
 
-This will pre-erase flash, write somefile.bin to the flash on the device, and then perform a verification after writing is finished.
+2.Power cycle or reset to let the qspi uart boot loader run
+#With BOOT0 pulled down and PC5 pulled down
+The LED on PA1 will flash
 
+3.Program your image into the external QSPI flash:(Maxim baud rate is 2073600 with CP2105 Enhanced uart port)
+python stm32loader.py -p COM8 -b 2073600 -a 0x90000000 -ewv  LED.bin
+
+4.Power cycle or reset or run below script to let the image in QSPI run
+#With BOOT0 pulled down and PC5 pulled UP
+python stm32loader.py -p COM8 -b 2073600 -g 0x90000000
