@@ -4,12 +4,13 @@ STM32Loader
 Python script which will talk to the STM32 bootloader to upload and download firmware.
 
 Original Version by: Ivan A-R <ivan@tuxotronic.org>
+Modified by        : Eagle Ding <dingfp@gmail.com>
 
-
-Usage: ./stm32loader.py  [-hqVewvr] [-l length] [-p port] [-b baud] [-a addr] [-g addr] [file.bin]
+Usage: ./stm32loader.py  [-hqVewvri] [-l length] [-p port] [-b baud] [-t parity] [-a addr] [-g addr] [file.bin]
     -h          This help
     -q          Quiet
     -V          Verbose
+    -i          Read Flash ID
     -e          Erase
     -w          Write
     -v          Verify
